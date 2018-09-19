@@ -1,0 +1,30 @@
+{
+  "name": "tf-oauth-flow-sandbox-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "develop": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anabellaspinelli/tf-oauth-flow-sandbox-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anabellaspinelli/tf-oauth-flow-sandbox-api/issues"
+  },
+  "homepage": "https://github.com/anabellaspinelli/tf-oauth-flow-sandbox-api#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "passport": "^0.4.0",
+    "passport-typeform": "^0.0.8"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}
