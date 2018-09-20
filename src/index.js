@@ -1,45 +1,33 @@
 const express = require('express')
 const passport = require('passport')
 const TypeformStrategy = require('passport-typeform')
-const dotenv = require('dotenv').config()
+const cookieSession = require('cookie-session')
+const dotenv = require('dotenv')
+const bodyParser = require('body-parser')
 
 const app = express()
+
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: ['aCookieKey']
+  })
+)
+app.use(bodyParser.json())
+dotenv.config()
 
 /* =====================
    Initialize passport
 ======================== */
-app.use(passport.initialize())
-app.use(passport.session())
 
-
-/* =====================
-   Configure Passport
-======================== */
 passport.serializeUser((user, done) => done(null, user))
 passport.deserializeUser((user, done) => done(null, user))
-passport.use(
-  new TypeformStrategy(
-    {
-      // options for the typeform strategy
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: process.env.REDIRECT_URI,
-      scope: ['accounts:read']
-    },
-    (accessToken, refreshToken, profile, cb) => {
-      // passport callback function fires after exchanging code for profile info
-      cb(null, { access_token: accessToken, profile })
-    }
-  )
-)
-
+app.use(passport.initialize())
+app.use(passport.session())
 
 /* =====================
       Auth routes
 ======================== */
-
-// authenticate with typeform
-app.get('/auth/typeform', passport.authenticate('typeform'))
 
 app.get(
   '/auth/typeform/redirect',
@@ -54,11 +42,45 @@ app.get(
   (req, res) => {
     /* this fires AFTER the passport callback function
     the `user` obj comes in the request as per passport.serialize/deserialize */
-    console.log(req.user)
+    console.log({ redirect: req.user })
     res.redirect('/authenticated')
+  }
+)
+
+app.post('/auth/typeform/scopes', (req, res, next) => {
+  setupStrategy(req.body.scopes)
+
+  passport.authenticate('typeform')(req, res, next)
+})
+
+/* =====================
+      Other routes
+======================== */
+app.get(
+  '/authenticated',
+  (req, res) => {
+    res.send(req.user)
   }
 )
 
 const PORT = process.env.PORT || 9031
 
 app.listen(PORT, () => console.log(`server listening on port ${PORT}`))
+
+const setupStrategy = scopes => {
+  passport.use(
+    new TypeformStrategy(
+      {
+        // options for the typeform strategy
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: process.env.REDIRECT_URI,
+        scope: scopes
+      },
+      (accessToken, refreshToken, profile, cb) => {
+        // passport callback function fires after exchanging code for profile info
+        cb(null, { access_token: accessToken, profile })
+      }
+    )
+  )
+}
