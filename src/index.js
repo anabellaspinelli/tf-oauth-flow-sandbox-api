@@ -1,9 +1,10 @@
 const express = require('express')
 const passport = require('passport')
-const TypeformStrategy = require('passport-typeform')
 const cookieSession = require('cookie-session')
 const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
+
+const setupStrategy = require('./setupStrategy')
 
 const app = express()
 
@@ -25,16 +26,12 @@ passport.deserializeUser((user, done) => done(null, user))
 app.use(passport.initialize())
 app.use(passport.session())
 
-/* =====================
-      Auth routes
-======================== */
-
 app.get(
   '/auth/typeform/redirect',
   (req, res, next) => {
     // Handle the user declining consent
     if (!req.query.code) {
-      return res.redirect('/')
+      throw new Error('User declined consent')
     }
 
     passport.authenticate('typeform')(req, res, next)
@@ -53,9 +50,6 @@ app.post('/auth/typeform/scopes', (req, res, next) => {
   passport.authenticate('typeform')(req, res, next)
 })
 
-/* =====================
-      Other routes
-======================== */
 app.get(
   '/authenticated',
   (req, res) => {
@@ -63,24 +57,14 @@ app.get(
   }
 )
 
+app.get('/', (req, res, next) => {
+  res.sendStatus(200)
+})
+
 const PORT = process.env.PORT || 9031
 
-app.listen(PORT, () => console.log(`server listening on port ${PORT}`))
+const server = app.listen(PORT, () => {
+  console.log(`server listening on port ${PORT}`)
+})
 
-const setupStrategy = scopes => {
-  passport.use(
-    new TypeformStrategy(
-      {
-        // options for the typeform strategy
-        clientID: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: process.env.REDIRECT_URI,
-        scope: scopes
-      },
-      (accessToken, refreshToken, profile, cb) => {
-        // passport callback function fires after exchanging code for profile info
-        cb(null, { access_token: accessToken, profile })
-      }
-    )
-  )
-}
+module.exports = server

@@ -21,12 +21,25 @@
   "homepage": "https://github.com/anabellaspinelli/tf-oauth-flow-sandbox-api#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "chai": "^4.1.2",
+    "chai-http": "^4.2.0",
     "cookie-session": "^2.0.0-beta.3",
     "express": "^4.16.3",
+    "mocha": "^5.2.0",
     "passport": "^0.4.0",
-    "passport-typeform": "^0.0.8"
+    "passport-typeform": "^0.0.8",
+    "standard": "^12.0.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"
+  },
+  "standard": {
+    "globals": [
+      "beforeEach",
+      "describe",
+      "it",
+      "expect",
+      "after"
+    ]
   }
 }
