@@ -19,8 +19,14 @@ dotenv.config()
 app.use(passport.initialize())
 app.use(passport.session())
 
-passport.serializeUser((user, done) => done(null, user))
-passport.deserializeUser((user, done) => done(null, user))
+passport.serializeUser((user, done) => {
+  process.env.ENV === 'dev' && console.info({ user })
+  done(null, user)
+})
+passport.deserializeUser((user, done) => {
+  process.env.ENV === 'dev' && console.info({ user })
+  done(null, user)
+})
 
 app.get(
   '/auth/typeform/redirect',
@@ -35,22 +41,15 @@ app.get(
   (req, res) => {
     /* this fires AFTER the strategy verify callback function
     the `user` obj comes in the request after running passport.serialize/deserialize */
-    res.redirect('/authenticated')
+    res.send(req.user)
   }
 )
 
 app.post('/auth/typeform/scopes', (req, res, next) => {
   setupStrategy(req.body.scopes)
 
-  passport.authenticate('typeform')(req, res, next)
+  return passport.authenticate('typeform')(req, res, next)
 })
-
-app.get(
-  '/authenticated',
-  (req, res) => {
-    res.send(req.user)
-  }
-)
 
 app.get('/', (req, res, next) => {
   res.sendStatus(200)
@@ -59,7 +58,7 @@ app.get('/', (req, res, next) => {
 const PORT = process.env.PORT || 9031
 
 const server = app.listen(PORT, () => {
-  console.log(`server listening on port ${PORT}`)
+  process.env.ENV === 'dev' && console.log(`server listening on port ${PORT}`)
 })
 
 module.exports = server
