@@ -9,7 +9,7 @@ const setupStrategy = require('./setupStrategy')
 const app = express()
 
 app.use(session({
-  secret: "thesecretgarden",
+  secret: 'thesecretgarden',
   resave: false,
   saveUninitialized: false
 }))

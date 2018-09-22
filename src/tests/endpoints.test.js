@@ -10,19 +10,19 @@ const tokenResponse = require('./mock-data/tokenResponse.mock')
 
 chai.use(chaiHttp)
 
-nockOptions = { allowUnmocked: true };
+const nockOptions = { allowUnmocked: true }
 
 describe('Endpoints', () => {
   before(() => {
     nock('https://api.typeform.com', nockOptions)
       .persist()
       .post('/oauth/token')
-      .reply(200, tokenResponse);
+      .reply(200, tokenResponse)
 
     nock('https://api.typeform.com', nockOptions)
       .persist()
       .get('/me')
-      .reply(200, profileResponse);
+      .reply(200, profileResponse)
   })
 
   it('should return 200 when getting "/"', done => {
