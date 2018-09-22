@@ -30,6 +30,7 @@
     "chai": "^4.1.2",
     "chai-http": "^4.2.0",
     "husky": "^1.0.0-rc.15",
+    "lint-staged": "^7.3.0",
     "mocha": "^5.2.0",
     "nock": "^10.0.0",
     "nodemon": "^1.18.4",
@@ -39,9 +40,15 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "standard --fix && yarn test",
+      "pre-commit": "lint-staged && yarn test",
       "commit-msg": "validate-commit-msg"
     }
+  },
+  "lint-staged": {
+    "*.js": [
+      "standard --fix",
+      "git add"
+    ]
   },
   "standard": {
     "globals": [
@@ -75,11 +82,7 @@
           "*"
         ]
       },
-      "warnOnFail": false,
-      "maxSubjectLength": 100,
-      "subjectPattern": ".+",
-      "subjectPatternErrorMsg": "subject does not match subject pattern!",
-      "autoFix": false
+      "maxSubjectLength": 100
     }
   }
 }
