@@ -12,7 +12,7 @@ module.exports = scopes => {
         scope: scopes
       },
       (accessToken, refreshToken, profile, cb) => {
-        // passport callback function fires after exchanging code for profile info
+        // passport VERIFY callback function fires after exchanging code for profile info
         cb(null, { access_token: accessToken, profile })
       }
     )

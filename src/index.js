@@ -1,6 +1,6 @@
 const express = require('express')
+const session = require('express-session')
 const passport = require('passport')
-const cookieSession = require('cookie-session')
 const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
 
@@ -8,23 +8,19 @@ const setupStrategy = require('./setupStrategy')
 
 const app = express()
 
-app.use(
-  cookieSession({
-    maxAge: 24 * 60 * 60 * 1000,
-    keys: ['aCookieKey']
-  })
-)
+app.use(session({
+  secret: "thesecretgarden",
+  resave: false,
+  saveUninitialized: false
+}))
 app.use(bodyParser.json())
 dotenv.config()
 
-/* =====================
-   Initialize passport
-======================== */
+app.use(passport.initialize())
+app.use(passport.session())
 
 passport.serializeUser((user, done) => done(null, user))
 passport.deserializeUser((user, done) => done(null, user))
-app.use(passport.initialize())
-app.use(passport.session())
 
 app.get(
   '/auth/typeform/redirect',
@@ -37,9 +33,8 @@ app.get(
     passport.authenticate('typeform')(req, res, next)
   },
   (req, res) => {
-    /* this fires AFTER the passport callback function
-    the `user` obj comes in the request as per passport.serialize/deserialize */
-    console.log({ redirect: req.user })
+    /* this fires AFTER the strategy verify callback function
+    the `user` obj comes in the request after running passport.serialize/deserialize */
     res.redirect('/authenticated')
   }
 )
