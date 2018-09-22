@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anabellaspinelli/tf-oauth-flow-sandbox-api.git"
+    "url": "https://github.com/anabellaspinelli/tf-oauth-flow-sandbox-api.git"
   },
   "keywords": [],
   "author": "",
@@ -21,26 +21,65 @@
   "homepage": "https://github.com/anabellaspinelli/tf-oauth-flow-sandbox-api#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "chai": "^4.1.2",
-    "chai-http": "^4.2.0",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
-    "mocha": "^5.2.0",
-    "nock": "^10.0.0",
     "passport": "^0.4.0",
-    "passport-typeform": "^0.0.8",
-    "standard": "^12.0.1"
+    "passport-typeform": "^0.0.8"
   },
   "devDependencies": {
-    "nodemon": "^1.18.4"
+    "chai": "^4.1.2",
+    "chai-http": "^4.2.0",
+    "husky": "^1.0.0-rc.15",
+    "mocha": "^5.2.0",
+    "nock": "^10.0.0",
+    "nodemon": "^1.18.4",
+    "standard": "^12.0.1",
+    "validate-commit-message": "^3.0.1",
+    "yarn": "^1.9.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "standard --fix && yarn test",
+      "commit-msg": "validate-commit-msg"
+    }
   },
   "standard": {
     "globals": [
-      "beforeEach",
       "describe",
       "it",
       "expect",
-      "after"
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach"
     ]
+  },
+  "config": {
+    "validate-commit-message": {
+      "types": [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "build",
+        "ci",
+        "chore",
+        "revert"
+      ],
+      "scope": {
+        "required": false,
+        "allowed": [
+          "*"
+        ]
+      },
+      "warnOnFail": false,
+      "maxSubjectLength": 100,
+      "subjectPattern": ".+",
+      "subjectPatternErrorMsg": "subject does not match subject pattern!",
+      "autoFix": false
+    }
   }
 }
