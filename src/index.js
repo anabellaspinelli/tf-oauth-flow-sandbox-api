@@ -5,6 +5,7 @@ const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
 
 const setupStrategy = require('./setupStrategy')
+const validateScopes = require('./validation/validateScopes')
 
 const app = express()
 
@@ -28,6 +29,17 @@ passport.deserializeUser((user, done) => {
   done(null, user)
 })
 
+app.post('/auth/typeform/scopes', (req, res, next) => {
+  const scopes = req.body.scopes
+
+  if (validateScopes(scopes)) {
+    setupStrategy(req.body.scopes)
+    return passport.authenticate('typeform')(req, res, next)
+  }
+
+  res.status(400).send('Bad request, invalid scopes')
+})
+
 app.get(
   '/auth/typeform/redirect',
   (req, res, next) => {
@@ -44,12 +56,6 @@ app.get(
     res.send(req.user)
   }
 )
-
-app.post('/auth/typeform/scopes', (req, res, next) => {
-  setupStrategy(req.body.scopes)
-
-  return passport.authenticate('typeform')(req, res, next)
-})
 
 app.get('/', (req, res, next) => {
   res.sendStatus(200)
