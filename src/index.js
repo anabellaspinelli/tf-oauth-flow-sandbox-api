@@ -37,7 +37,7 @@ app.post('/auth/typeform/scopes', (req, res, next) => {
     return passport.authenticate('typeform')(req, res, next)
   }
 
-  res.status(400).send('Bad request, invalid scopes')
+  res.status(400).send('Bad request, scopes must be an array of valid scopes')
 })
 
 app.get(

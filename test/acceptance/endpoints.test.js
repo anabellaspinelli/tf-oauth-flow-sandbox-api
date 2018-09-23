@@ -1,12 +1,12 @@
 const chai = require('chai')
 const chaiHttp = require('chai-http')
-const server = require('..')
+const server = require('../../src')
 const nock = require('nock')
 
-const setupStrategy = require('../setupStrategy')
+const setupStrategy = require('../../src/setupStrategy')
 
-const profileResponse = require('./mock-data/profileResponse.mock')
-const tokenResponse = require('./mock-data/tokenResponse.mock')
+const profileResponse = require('../mock-data/profileResponse.mock')
+const tokenResponse = require('../mock-data/tokenResponse.mock')
 
 chai.use(chaiHttp)
 
@@ -46,6 +46,21 @@ describe('Endpoints', () => {
       .end((err, res) => {
         if (err) done(err)
         chai.expect(res.status).to.equal(200)
+        done()
+      })
+  })
+
+  it('should return 400 when posting invalid scopes to "/auth/typeform/scopes"', done => {
+    chai.request(server)
+      .post('/auth/typeform/scopes')
+      .send({
+        scopes: [
+          'accounts:accounts'
+        ]
+      })
+      .end((err, res) => {
+        if (err) done(err)
+        chai.expect(res.status).to.equal(400)
         done()
       })
   })

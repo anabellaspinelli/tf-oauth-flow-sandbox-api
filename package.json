@@ -4,7 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "export ENV=test && mocha src/tests",
+    "test": "mocha",
+    "test:acceptance": "mocha test/acceptance",
+    "test:unit": "mocha test/unit",
     "start": "node src/index.js",
     "develop": "export ENV=dev && nodemon src/index.js"
   },
